@@ -1,13 +1,47 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, Input, Checkbox, Card, CardBody, Link } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff, Building2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { mapAuthError } from "../utils/authErrorMapper";
+import { AuthError } from "@supabase/supabase-js";
 
 export function LoginForm() {
-    const [isVisible, setIsVisible] = React.useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+    const supabase = createClient();
 
     const toggleVisibility = () => setIsVisible(!isVisible);
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) {
+                setError(mapAuthError(error));
+            } else {
+                router.push("/admin");
+                router.refresh();
+            }
+        } catch (err) {
+            setError(mapAuthError(err as AuthError));
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[image:var(--image-gradient-hero)] p-4 font-sans">
@@ -31,11 +65,18 @@ export function LoginForm() {
                         <p className="text-sm text-muted-foreground">Kelola keuangan masjid dengan mudah</p>
                     </div>
 
-                    <form className="flex flex-col gap-4">
+                    <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                        {error && (
+                            <div className="bg-danger-50 text-danger text-sm p-3 rounded-md text-center">
+                                {error}
+                            </div>
+                        )}
                         <Input
-                            label="Email atau Username"
+                            label="Email"
                             labelPlacement="outside"
                             placeholder="admin@masjid.com"
+                            value={email}
+                            onValueChange={setEmail}
                             startContent={
                                 <Mail className="text-2xl text-default-400 pointer-events-none flex-shrink-0" size={18} />
                             }
@@ -43,12 +84,15 @@ export function LoginForm() {
                             classNames={{
                                 inputWrapper: "bg-white",
                             }}
+                            isRequired
                         />
 
                         <Input
                             label="Password"
                             labelPlacement="outside"
                             placeholder="********"
+                            value={password}
+                            onValueChange={setPassword}
                             endContent={
                                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                                     {isVisible ? (
@@ -66,6 +110,7 @@ export function LoginForm() {
                             classNames={{
                                 inputWrapper: "bg-white",
                             }}
+                            isRequired
                         />
 
                         <div className="flex justify-between items-center mt-2">
@@ -77,13 +122,19 @@ export function LoginForm() {
                             </Link>
                         </div>
 
-                        <Button color="primary" className="w-full font-semibold shadow-md shadow-primary/20 mt-2" size="lg">
+                        <Button
+                            type="submit"
+                            color="primary"
+                            className="w-full font-semibold shadow-md shadow-primary/20 mt-2"
+                            size="lg"
+                            isLoading={loading}
+                        >
                             Masuk
                         </Button>
                     </form>
 
                     <div className="text-center mt-2">
-                        <Link href="#" size="sm" className="text-muted-foreground hover:text-foreground transition-colors">
+                        <Link href="/" size="sm" className="text-muted-foreground hover:text-foreground transition-colors">
                             ← Kembali ke Halaman Publik
                         </Link>
                     </div>
