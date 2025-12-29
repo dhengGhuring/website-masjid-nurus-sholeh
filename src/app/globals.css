@@ -3,26 +3,95 @@
 @source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Main Palette */
+  --background: #F9FBFA;
+  --foreground: #1B2E25;
+  --card: #FFFFFF;
+  --card-foreground: #1B2E25;
+  --popover: #FFFFFF;
+  --popover-foreground: #1B2E25;
+  --primary: #4A9C6D;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EEF5F1;
+  --secondary-foreground: #1B2E25;
+  --muted: #E8EDE9;
+  --muted-foreground: #64748B;
+  --accent: #297A52;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E53935;
+  --destructive-foreground: #FFFFFF;
+  --border: #E8EDE9;
+  --input: #E8EDE9;
+  --ring: #4A9C6D;
+
+  /* Finance Colors */
+  --income: #2E9E5F;
+  --expense: #D94C4C;
+  --balance: #2196F3;
+
+  /* Sidebar Colors */
+  --sidebar-bg: #4A9C6D;
+  --sidebar-accent: #297A52;
+  --sidebar-foreground: #FFFFFF;
+
+  /* Border Radius */
+  --radius-sm: 2px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #4A9C6D 0%, #297A52 100%);
+  --gradient-hero: linear-gradient(135deg, #EEF5F1 0%, #E0EEE5 100%);
+  --gradient-card: linear-gradient(180deg, #FFFFFF 0%, #F5FAF7 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-balance: var(--balance);
+
+  --color-sidebar: var(--sidebar-bg);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  --font-sans: var(--font-plus-jakarta-sans), sans-serif;
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  --image-gradient-primary: var(--gradient-primary);
+  --image-gradient-hero: var(--gradient-hero);
+  --image-gradient-card: var(--gradient-card);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

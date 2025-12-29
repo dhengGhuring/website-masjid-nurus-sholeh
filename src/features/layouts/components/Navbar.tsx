@@ -16,8 +16,16 @@ import {
   PopoverContent,
   Button,
 } from "@heroui/react";
+import { usePathname } from 'next/navigation';
 
 export const Navbar = () => {
+  const pathname = usePathname();
+
+  // Hide Navbar on login page
+  if (pathname === '/login') {
+    return null;
+  }
+
   return (
     <HeroNavbar position="static">
       <NavbarBrand>
