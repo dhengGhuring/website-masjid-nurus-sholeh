@@ -1,11 +1,11 @@
 import { Card, CardBody } from "@heroui/react";
-import React from "react";
+import React, { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 
 interface StatsCardProps {
     title: string;
-    value: string;
-    trend?: string;
+    value: string | ReactNode;
+    trend?: string | ReactNode;
     trendDescription?: string;
     trendType?: "positive" | "negative";
     icon: LucideIcon;
@@ -58,11 +58,19 @@ export const StatsCard = ({
             <CardBody className="p-4 flex flex-row items-center justify-between gap-4">
                 <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                    <h3 className="text-2xl font-bold text-foreground tracking-tight">{value}</h3>
+                    {typeof value === "string" ? (
+                        <h3 className="text-2xl font-bold text-foreground tracking-tight">{value}</h3>
+                    ) : (
+                        value
+                    )}
 
                     {(trend || trendDescription) && (
                         <div className="flex items-center gap-1 text-xs">
-                            <span className={`${getTrendColor()} font-medium`}>{trend}</span>
+                            {typeof trend === "string" ? (
+                                <span className={`${getTrendColor()} font-medium`}>{trend}</span>
+                            ) : (
+                                trend
+                            )}
                             <span className="text-muted-foreground">{trendDescription}</span>
                         </div>
                     )}

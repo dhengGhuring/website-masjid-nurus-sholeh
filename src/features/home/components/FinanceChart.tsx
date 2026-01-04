@@ -11,25 +11,17 @@ import {
     ResponsiveContainer,
     Legend,
 } from "recharts";
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardBody, Spinner } from "@heroui/react";
+import { formatCurrency } from "@/lib/utils/formatCurrency";
 
-const data = [
-    { name: "Jan", income: 45000000, expense: 32000000 },
-    { name: "Feb", income: 52000000, expense: 38000000 },
-    { name: "Mar", income: 48000000, expense: 42000000 },
-    { name: "Apr", income: 61000000, expense: 35000000 },
-    { name: "Mei", income: 55000000, expense: 40000000 },
-    { name: "Jun", income: 67000000, expense: 45000000 },
-];
-
-const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
-};
+interface FinanceChartData {
+    grafik: {
+        name: string;
+        income: number;
+        expense: number;
+    }[];
+    isLoading: boolean;
+}
 
 const formatYAxis = (value: number) => {
     if (value >= 1000000) {
@@ -68,71 +60,82 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return null;
 };
 
-export const FinanceChart = () => {
+export const FinanceChart = ({ grafik, isLoading }: FinanceChartData) => {
     return (
         <Card className="shadow-sm border border-divider" radius="lg">
-            <CardBody className="p-6">
+            <CardBody className={`p-6 ${isLoading ? "h-[400px]" : ""}`}>
                 <div className="mb-8">
                     <h3 className="text-xl font-bold text-foreground">Grafik Keuangan</h3>
                     <p className="text-sm text-muted-foreground">
                         Perbandingan pemasukan dan pengeluaran 6 bulan terakhir
                     </p>
                 </div>
-
-                <div className="h-[400px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                            data={data}
-                            margin={{
-                                top: 20,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                            }}
-                            barGap={8}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis
-                                dataKey="name"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: '#6B7280', fontSize: 12 }}
-                                dy={10}
-                            />
-                            <YAxis
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: '#6B7280', fontSize: 12 }}
-                                tickFormatter={formatYAxis}
-                            />
-                            <Tooltip
-                                content={<CustomTooltip />}
-                                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                            />
-                            <Legend
-                                wrapperStyle={{ paddingTop: '20px' }}
-                                iconType="rect"
-                                formatter={(value) => (
-                                    <span className="text-sm text-muted-foreground ml-1">
-                                        {value === 'income' ? 'Pemasukan' : 'Pengeluaran'}
-                                    </span>
-                                )}
-                            />
-                            <Bar
-                                dataKey="income"
-                                fill="var(--income)"
-                                radius={[4, 4, 0, 0]}
-                                maxBarSize={50}
-                            />
-                            <Bar
-                                dataKey="expense"
-                                fill="var(--expense)"
-                                radius={[4, 4, 0, 0]}
-                                maxBarSize={50}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
+                {isLoading && (
+                    <div className="flex items-center justify-center h-[400px] w-full">
+                        <Spinner />
+                    </div>
+                )}
+                {!isLoading && grafik.length === 0 && (
+                    <div className="flex items-center justify-center h-[400px] w-full">
+                        <p className="text-muted-foreground">Belum ada Grafik Keuangan</p>
+                    </div>
+                )}
+                {!isLoading && grafik.length > 0 && (
+                    <div className="h-[400px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={grafik}
+                                margin={{
+                                    top: 20,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                                barGap={8}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#6B7280', fontSize: 12 }}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#6B7280', fontSize: 12 }}
+                                    tickFormatter={formatYAxis}
+                                />
+                                <Tooltip
+                                    content={<CustomTooltip />}
+                                    cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                                />
+                                <Legend
+                                    wrapperStyle={{ paddingTop: '20px' }}
+                                    iconType="rect"
+                                    formatter={(value) => (
+                                        <span className="text-sm text-muted-foreground ml-1">
+                                            {value === 'income' ? 'Pemasukan' : 'Pengeluaran'}
+                                        </span>
+                                    )}
+                                />
+                                <Bar
+                                    dataKey="income"
+                                    fill="var(--income)"
+                                    radius={[4, 4, 0, 0]}
+                                    maxBarSize={50}
+                                />
+                                <Bar
+                                    dataKey="expense"
+                                    fill="var(--expense)"
+                                    radius={[4, 4, 0, 0]}
+                                    maxBarSize={50}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                )}
             </CardBody>
         </Card>
     );

@@ -8,27 +8,31 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Input,
     Button,
-    DropdownTrigger,
-    Dropdown,
-    DropdownMenu,
-    DropdownItem,
     Chip,
-    User,
-    Pagination,
     Select,
     SelectItem,
     Modal,
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter,
     useDisclosure,
-    Image,
     Card,
+    Spinner,
 } from "@heroui/react";
 import { ChevronDown, Search, Download, Image as ImageIcon, Calendar } from "lucide-react";
+import { HomepageTransactionRow } from "../types";
+import { exportTransactionsPdf } from "@/lib/utils/exportTransactionsPdf";
+import { formatCurrency } from "@/lib/utils/formatCurrency";
+
+interface TransactionHistoryProps {
+    isLoading: boolean;
+    transactions: HomepageTransactionRow[];
+    setMonthFilter: (month: number | null) => void;
+    setYearFilter: (year: number) => void;
+    selectedMonth: number | null;
+    selectedYear: number;
+}
 
 const columns = [
     { name: "Tanggal", uid: "date" },
@@ -40,63 +44,74 @@ const columns = [
     { name: "Bukti", uid: "proof" },
 ];
 
-const transactions = [
-    {
-        id: 1,
-        date: "27 Des 2024",
-        description: "Infaq Jumat",
-        category: "Infaq",
-        categoryColor: "default",
-        income: 5500000,
-        expense: 0,
-        balance: 125500000,
-        proof: "/docs/images/fruit-1.jpeg", // Placeholder
-    },
-    {
-        id: 2,
-        date: "26 Des 2024",
-        description: "Pembayaran Listrik",
-        category: "Operasional",
-        categoryColor: "secondary",
-        income: 0,
-        expense: 1200000,
-        balance: 120000000,
-        proof: "/docs/images/fruit-2.jpeg",
-    },
-    {
-        id: 3,
-        date: "25 Des 2024",
-        description: "Donasi Jamaah",
-        category: "Donasi",
-        categoryColor: "primary",
-        income: 10000000,
-        expense: 0,
-        balance: 121200000,
-        proof: null,
-    },
-    {
-        id: 4,
-        date: "24 Des 2024",
-        description: "Pembelian Perlengkapan",
-        category: "Inventaris",
-        categoryColor: "secondary",
-        income: 0,
-        expense: 2500000,
-        balance: 111200000,
-        proof: "/docs/images/fruit-3.jpeg",
-    },
-    {
-        id: 5,
-        date: "23 Des 2024",
-        description: "Zakat Fitrah",
-        category: "Zakat",
-        categoryColor: "default",
-        income: 15000000,
-        expense: 0,
-        balance: 113700000,
-        proof: null,
-    },
+// Daftar bulan dalam bahasa Indonesia
+const months = [
+    "Semua", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
+
+// Daftar tahun
+const years = [
+    "2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"
+];
+
+// const transactions = [
+//     {
+//         id: 1,
+//         date: "27 Des 2024",
+//         description: "Infaq Jumat",
+//         category: "Infaq",
+//         categoryColor: "default",
+//         income: 5500000,
+//         expense: 0,
+//         balance: 125500000,
+//         proof: "/docs/images/fruit-1.jpeg", // Placeholder
+//     },
+//     {
+//         id: 2,
+//         date: "26 Des 2024",
+//         description: "Pembayaran Listrik",
+//         category: "Operasional",
+//         categoryColor: "secondary",
+//         income: 0,
+//         expense: 1200000,
+//         balance: 120000000,
+//         proof: "/docs/images/fruit-2.jpeg",
+//     },
+//     {
+//         id: 3,
+//         date: "25 Des 2024",
+//         description: "Donasi Jamaah",
+//         category: "Donasi",
+//         categoryColor: "primary",
+//         income: 10000000,
+//         expense: 0,
+//         balance: 121200000,
+//         proof: null,
+//     },
+//     {
+//         id: 4,
+//         date: "24 Des 2024",
+//         description: "Pembelian Perlengkapan",
+//         category: "Inventaris",
+//         categoryColor: "secondary",
+//         income: 0,
+//         expense: 2500000,
+//         balance: 111200000,
+//         proof: "/docs/images/fruit-3.jpeg",
+//     },
+//     {
+//         id: 5,
+//         date: "23 Des 2024",
+//         description: "Zakat Fitrah",
+//         category: "Zakat",
+//         categoryColor: "default",
+//         income: 15000000,
+//         expense: 0,
+//         balance: 113700000,
+//         proof: null,
+//     },
+// ];
 
 const categoryColorMap: Record<string, "default" | "primary" | "secondary" | "success" | "warning" | "danger"> = {
     Infaq: "success",
@@ -106,19 +121,11 @@ const categoryColorMap: Record<string, "default" | "primary" | "secondary" | "su
     Zakat: "success",
 };
 
-const formatCurrency = (value: number) => {
-    if (value === 0) return "-";
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
-};
-
-export const TransactionHistory = () => {
+export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, setYearFilter, selectedMonth, selectedYear }: TransactionHistoryProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [selectedProof, setSelectedProof] = React.useState<string | null>(null);
+    const date = new Date().toLocaleString("id-ID", { dateStyle: "long" });
+    const dateExported = `${date}`;
 
     const handleViewProof = (proofUrl: string) => {
         setSelectedProof(proofUrl);
@@ -185,27 +192,45 @@ export const TransactionHistory = () => {
                     <Select
                         placeholder="Bulan"
                         className="w-32"
-                        defaultSelectedKeys={["desember"]}
+                        selectedKeys={[selectedMonth ? months[selectedMonth] : "Semua"]}
                         size="sm"
                         startContent={<Calendar size={14} />}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "Semua" || !val) {
+                                setMonthFilter(null);
+                            } else {
+                                const idx = months.indexOf(val);
+                                // months[0] is "Semua", months[1] is "Januari" which maps to month 1
+                                if (idx > 0) setMonthFilter(idx);
+                                else setMonthFilter(null);
+                            }
+                        }}
                     >
-                        <SelectItem key="desember">Desember</SelectItem>
-                        <SelectItem key="november">November</SelectItem>
+                        {months.map((month) => (
+                            <SelectItem key={month}>{month}</SelectItem>
+                        ))}
                     </Select>
                     <Select
                         placeholder="Tahun"
                         className="w-24"
-                        defaultSelectedKeys={["2024"]}
+                        selectedKeys={[selectedYear.toString()]}
                         size="sm"
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (val) setYearFilter(parseInt(val));
+                        }}
                     >
-                        <SelectItem key="2024">2024</SelectItem>
-                        <SelectItem key="2023">2023</SelectItem>
+                        {years.map((year) => (
+                            <SelectItem key={year}>{year}</SelectItem>
+                        ))}
                     </Select>
                     <Button
                         startContent={<Download size={16} />}
                         variant="bordered"
                         className="font-medium"
                         size="sm" // Matches select size
+                        onPress={() => exportTransactionsPdf(transactions, dateExported)}
                     >
                         Download PDF
                     </Button>
@@ -213,30 +238,38 @@ export const TransactionHistory = () => {
             </div>
 
             <Card className="shadow-sm border border-divider overflow-x-auto" radius="lg">
-                <Table
-                    aria-label="Transaction history table"
-                    removeWrapper
-                    className="p-2 min-w-[800px]"
-                    classNames={{
-                        th: "bg-transparent text-default-500 font-medium",
-                        td: "py-3"
-                    }}
-                >
-                    <TableHeader columns={columns}>
-                        {(column) => (
-                            <TableColumn key={column.uid} align={column.uid === "proof" ? "center" : "start"}>
-                                {column.name}
-                            </TableColumn>
-                        )}
-                    </TableHeader>
-                    <TableBody items={transactions}>
-                        {(item) => (
-                            <TableRow key={item.id}>
-                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                {isLoading && <Spinner />}
+                {!isLoading && transactions.length === 0 && (
+                    <div className="flex items-center justify-center h-[400px] w-full">
+                        <p className="text-muted-foreground">Belum ada Riwayat Transaksi</p>
+                    </div>
+                )}
+                {!isLoading && transactions.length > 0 && (
+                    <Table
+                        aria-label="Transaction history table"
+                        removeWrapper
+                        className="p-2 min-w-[800px]"
+                        classNames={{
+                            th: "bg-transparent text-default-500 font-medium",
+                            td: "py-3"
+                        }}
+                    >
+                        <TableHeader columns={columns}>
+                            {(column) => (
+                                <TableColumn key={column.uid} align={column.uid === "proof" ? "center" : "start"}>
+                                    {column.name}
+                                </TableColumn>
+                            )}
+                        </TableHeader>
+                        <TableBody items={transactions}>
+                            {(item) => (
+                                <TableRow key={item.id}>
+                                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </Card>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" backdrop="blur">
