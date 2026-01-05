@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-01-05
+
+### Detail Versi 0.5.0
+
+#### ✨ Fitur & Integrasi Baru di `dev` untuk versi 0.5.0
+
+- **Deskripsi:**
+  - **Admin Dashboard:** Menghubungkan admin dashboard dengan Supabase.
+
 ## [0.4.0] - 2026-01-04
 
 ### Detail Versi 0.4.0
