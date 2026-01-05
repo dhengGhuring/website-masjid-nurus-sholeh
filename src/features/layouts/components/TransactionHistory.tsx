@@ -20,10 +20,11 @@ import {
     Card,
     Spinner,
 } from "@heroui/react";
-import { ChevronDown, Search, Download, Image as ImageIcon, Calendar } from "lucide-react";
-import { HomepageTransactionRow } from "../types";
+import { ChevronDown, Search, Download, Image as ImageIcon, Calendar, MoveRight } from "lucide-react";
+import { HomepageTransactionRow } from "@/features/home/types";
 import { exportTransactionsPdf } from "@/lib/utils/exportTransactionsPdf";
 import { formatCurrency } from "@/lib/utils/formatCurrency";
+import Link from "next/link";
 
 interface TransactionHistoryProps {
     isLoading: boolean;
@@ -32,6 +33,7 @@ interface TransactionHistoryProps {
     setYearFilter: (year: number) => void;
     selectedMonth: number | null;
     selectedYear: number;
+    isOnAdminPage?: boolean;
 }
 
 const columns = [
@@ -55,64 +57,6 @@ const years = [
     "2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"
 ];
 
-// const transactions = [
-//     {
-//         id: 1,
-//         date: "27 Des 2024",
-//         description: "Infaq Jumat",
-//         category: "Infaq",
-//         categoryColor: "default",
-//         income: 5500000,
-//         expense: 0,
-//         balance: 125500000,
-//         proof: "/docs/images/fruit-1.jpeg", // Placeholder
-//     },
-//     {
-//         id: 2,
-//         date: "26 Des 2024",
-//         description: "Pembayaran Listrik",
-//         category: "Operasional",
-//         categoryColor: "secondary",
-//         income: 0,
-//         expense: 1200000,
-//         balance: 120000000,
-//         proof: "/docs/images/fruit-2.jpeg",
-//     },
-//     {
-//         id: 3,
-//         date: "25 Des 2024",
-//         description: "Donasi Jamaah",
-//         category: "Donasi",
-//         categoryColor: "primary",
-//         income: 10000000,
-//         expense: 0,
-//         balance: 121200000,
-//         proof: null,
-//     },
-//     {
-//         id: 4,
-//         date: "24 Des 2024",
-//         description: "Pembelian Perlengkapan",
-//         category: "Inventaris",
-//         categoryColor: "secondary",
-//         income: 0,
-//         expense: 2500000,
-//         balance: 111200000,
-//         proof: "/docs/images/fruit-3.jpeg",
-//     },
-//     {
-//         id: 5,
-//         date: "23 Des 2024",
-//         description: "Zakat Fitrah",
-//         category: "Zakat",
-//         categoryColor: "default",
-//         income: 15000000,
-//         expense: 0,
-//         balance: 113700000,
-//         proof: null,
-//     },
-// ];
-
 const categoryColorMap: Record<string, "default" | "primary" | "secondary" | "success" | "warning" | "danger"> = {
     Infaq: "success",
     Operasional: "default",
@@ -121,7 +65,7 @@ const categoryColorMap: Record<string, "default" | "primary" | "secondary" | "su
     Zakat: "success",
 };
 
-export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, setYearFilter, selectedMonth, selectedYear }: TransactionHistoryProps) => {
+export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, setYearFilter, selectedMonth, selectedYear, isOnAdminPage = false }: TransactionHistoryProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [selectedProof, setSelectedProof] = React.useState<string | null>(null);
     const date = new Date().toLocaleString("id-ID", { dateStyle: "long" });
@@ -183,10 +127,19 @@ export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, se
         <div className="w-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h3 className="text-xl font-bold text-foreground">Riwayat Transaksi</h3>
-                    <p className="text-sm text-muted-foreground">
-                        Daftar transaksi keuangan masjid
-                    </p>
+                    {isOnAdminPage ? (
+                        <div className="flex flex-col items-start gap-1">
+                            <h3 className="text-xl font-bold text-foreground">Transaksi Terbaru</h3>
+                            <p className="text-sm text-muted-foreground">{transactions.length} transaksi terakhir</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-start gap-1">
+                            <h3 className="text-xl font-bold text-foreground">Riwayat Transaksi</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Daftar transaksi keuangan masjid
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-wrap gap-2 w-full md:w-auto">
                     <Select
@@ -234,6 +187,12 @@ export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, se
                     >
                         Download PDF
                     </Button>
+                    {isOnAdminPage && (
+                        <Link href="/admin/transactions" className="flex items-center gap-1 text-primary">
+                            <p className="text-sm">Lihat Semua</p>
+                            <MoveRight size={12} />
+                        </Link>
+                    )}
                 </div>
             </div>
 

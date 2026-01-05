@@ -3,8 +3,8 @@
 import React from 'react';
 import { StatsCard } from '@/features/layouts/components/StatsCard';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
-import { FinanceChart } from './FinanceChart';
-import { TransactionHistory } from './TransactionHistory';
+import { FinanceChart } from '@/features/layouts/components/FinanceChart';
+import { TransactionHistory } from '@/features/layouts/components/TransactionHistory';
 import { Footer } from '@/features/layouts/components/Footer';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { useHomePageSummary } from '../hooks/useHomePageSummary';
