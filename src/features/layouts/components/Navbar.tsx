@@ -7,16 +7,10 @@ import {
   NavbarContent,
   NavbarItem,
   Link,
-  NavbarMenuToggle,
-  NavbarMenu,
-  Accordion,
-  AccordionItem,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
   Button,
 } from "@heroui/react";
 import { usePathname } from 'next/navigation';
+import { Building2 } from "lucide-react";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -27,31 +21,22 @@ export const Navbar = () => {
   }
 
   return (
-    <HeroNavbar position="static">
-      <NavbarBrand>
-        {/* <AcmeLogo /> */}
-        <p className="font-bold text-inherit">Masjid Nurus Sholeh</p>
+    <HeroNavbar maxWidth="xl" position="sticky" className="bg-background/70 backdrop-blur-md border-b border-divider">
+      <NavbarBrand className="gap-3">
+        <div className="bg-primary/10 p-2 rounded-lg text-primary">
+          <Building2 size={24} />
+        </div>
+        <div className="flex flex-col">
+          <p className="font-bold text-foreground leading-none">Masjid Nurus Sholeh</p>
+          <p className="text-xs text-muted-foreground">Laporan Keuangan</p>
+        </div>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link aria-current="page" href="#">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link href="/login">Login</Link>
+          <Button as={Link} href="/login" variant="bordered" size="sm" className="font-medium">
+            Login Admin
+          </Button>
         </NavbarItem>
       </NavbarContent>
     </HeroNavbar>
