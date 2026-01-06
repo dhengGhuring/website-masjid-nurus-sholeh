@@ -1,9 +1,5 @@
-import { AdminPage } from "@/features/admin/components/AdminPage";
+import { AdminDashboardPage } from "@/features/admin/dashboard/components/DashboardPage";
 
 export default function Page() {
-  return (
-    <main>
-      <AdminPage />
-    </main>
-  );
+  return <AdminDashboardPage />;
 }
