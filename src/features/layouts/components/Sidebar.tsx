@@ -77,9 +77,9 @@ export const Sidebar = () => {
     const menuItems = [
         { name: "Beranda", icon: LayoutDashboard, href: "/admin" },
         { name: "Transaksi", icon: ReceiptText, href: "/admin/transactions" },
-        { name: "Laporan", icon: FileCheck, href: "/admin/reports" },
-        { name: "Kategori", icon: Tags, href: "/admin/categories" },
-        { name: "Pengguna", icon: Users, href: "/admin/users" },
+        // { name: "Laporan", icon: FileCheck, href: "/admin/reports" },
+        // { name: "Kategori", icon: Tags, href: "/admin/categories" },
+        // { name: "Pengguna", icon: Users, href: "/admin/users" },
     ];
 
     // Render Mobile Top Bar
@@ -93,7 +93,7 @@ export const Sidebar = () => {
                             <Building2 size={20} />
                         </div>
                         <div>
-                            <h1 className="font-bold text-base whitespace-nowrap">Masjid Al-Ikhlas</h1>
+                            <h1 className="font-bold text-base whitespace-nowrap">Masjid Nurus Sholeh</h1>
                             <p className="text-[10px] text-green-100 whitespace-nowrap">Admin Panel</p>
                         </div>
                     </div>
@@ -193,7 +193,7 @@ export const Sidebar = () => {
                         </div>
                         {!isCollapsed && (
                             <div className="overflow-hidden">
-                                <h1 className="font-bold text-lg whitespace-nowrap">Masjid Al-Ikhlas</h1>
+                                <h1 className="font-bold text-lg whitespace-nowrap">Masjid Nurus Sholeh</h1>
                                 <p className="text-xs text-green-100 whitespace-nowrap">Admin Panel</p>
                             </div>
                         )}

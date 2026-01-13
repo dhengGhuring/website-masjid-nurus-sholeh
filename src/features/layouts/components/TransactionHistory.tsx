@@ -106,7 +106,7 @@ export const TransactionHistory = ({ isLoading, transactions, setMonthFilter, se
                 );
             case "proof":
                 return transaction.proof ? (
-                    <div className="cursor-pointer text-success hover:text-success-600 transition-colors" onClick={() => handleViewProof(transaction.proof)}>
+                    <div className="cursor-pointer hover:bg-success/10 p-2 rounded-xl text-success hover:text-success-600 transition-colors flex justify-center" onClick={() => handleViewProof(transaction.proof)}>
                         <ImageIcon size={18} />
                     </div>
                 ) : (
