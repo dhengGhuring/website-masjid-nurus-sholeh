@@ -47,8 +47,8 @@ export const Navbar = () => {
     router.refresh();
   };
 
-  // Hide Navbar on login page and admin page
-  if (pathname === '/login' || pathname === '/admin') {
+  // Hide Navbar on login page and url with startWish = /admin
+  if (pathname === '/login' || pathname.startsWith('/admin')) {
     return null;
   }
 

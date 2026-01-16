@@ -28,6 +28,7 @@ export interface HomepageTransactionRow {
     expense: number;
     balance: number;
     proof: string | null;
+    type: "IN" | "OUT";
 }
 
 // Interface RESPONSE UTAMA

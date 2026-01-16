@@ -8,7 +8,7 @@ export const useHomePageSummary = ({ month, year }: { month: number | null, year
     const supabase = createClient();
 
     return useQuery({
-        queryKey: ["home-page-summary", month, year],
+        queryKey: ["transactions", "summary", month, year],
         queryFn: async () => {
             const { data, error } = await supabase.rpc("get_homepage_summary", { p_month: month || null, p_year: year });
 
