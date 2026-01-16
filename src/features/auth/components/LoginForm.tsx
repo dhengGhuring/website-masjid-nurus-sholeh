@@ -33,8 +33,24 @@ export function LoginForm() {
             if (error) {
                 setError(mapAuthError(error));
             } else {
-                router.push("/admin");
-                router.refresh();
+                // TODO: Check role if admin and bendahara redirect to /admin
+                // else can't login
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error("Unauthenticated");
+
+                const { data: profile } = await supabase
+                    .from("profiles")
+                    .select("role")
+                    .eq("id", user.id)
+                    .single();
+
+                if (["admin", "bendahara"].includes(profile?.role)) {
+                    router.push("/admin");
+                } else {
+                    setError("Anda tidak memiliki akses");
+                }
+
+
             }
         } catch (err) {
             setError(mapAuthError(err as AuthError));
